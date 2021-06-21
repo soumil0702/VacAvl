@@ -14,49 +14,81 @@ import sys
 
 #import win32api
 import winsound
+from numba.tests.dummy_module import function
+from _pytest.python import Function
+from onepassword.utils import scrape
 # example of adding options
 
 #PRINT SYNTAX print("Total students : %3d, Boys : %2d" % (240, 120))
 
-driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
-
+#driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
+driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
 url_pfizer =[ "https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button",
       "https://termin.dachau-med.de/impfungen03/"]
 
-grassl="https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button"
 dachau="https://termin.dachau-med.de/impfungen03/"
 #see if this finds the right button
 time.sleep(2)
 
-while True:
-    try:
-        driver.get(grassl)
-        cookiesBtn = "//*[@id='didomi-notice-disagree-button']"
-        if(driver.find_elements_by_xpath(cookiesBtn)):
-            driver.find_element_by_xpath(cookiesBtn).click()
-        driver.find_element_by_xpath("//*[@id='booking_speciality']/option[3]").click()
-        driver.find_element_by_xpath("//*[@id='booking_insurance_sector']/option[1]").click()
-        pfizer="//*[@id='booking_motive']/option[2]";
-        astra="//*[@id='booking_motive']/option[3]"
-        
-        driver.find_element_by_xpath(pfizer).click()
-        
-        #driver.find_element_by_xpath(astra).click()
-        time.sleep(1)
-        x=driver.find_elements_by_class_name("booking-message") #see if warning is available#
 
-        if(not x): #change this to not x
-            print(x)
-            print("Hallelujah!!!!! Grassl Vaccine available at ")
-            winsound.Beep(3000,7000)
-            t = time.localtime()
-            current_time = time.strftime("%H:%M:%S", t)
-            print("At time ",current_time)
-            break;
-        time.sleep(1)
 
-    except Exception as e:
-        print(e)
-        sys.exit()
+def scrapeGrassll(vacType): #0=pfizer, 1 = astra
+    
+    grassl="https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button"
+
+    while True:
+        try:
+            driver.get(grassl)
+            cookiesBtn = "//*[@id='didomi-notice-disagree-button']"
+            if(driver.find_elements_by_xpath(cookiesBtn)):
+                driver.find_element_by_xpath(cookiesBtn).click()
+            driver.find_element_by_xpath("//*[@id='booking_speciality']/option[3]").click()
+            driver.find_element_by_xpath("//*[@id='booking_insurance_sector']/option[1]").click()
+            pfizer="//*[@id='booking_motive']/option[2]";
+            astra="//*[@id='booking_motive']/option[3]"
+            
+            if(vacType==0):
+                vacType=pfizer
+            elif(vacType==1):
+                vacType=astra
+            
+            driver.find_element_by_xpath(vacType).click()
+            
+            #driver.find_element_by_xpath(astra).click()
+            time.sleep(1)
+            x=driver.find_elements_by_class_name("booking-message") #see if warning is available#
+            
+            if(not x): #change this to not x
+                print(x)
+                print("Hallelujah!!!!! Grassl Vaccine available at ")
+                winsound.Beep(3000,7000)
+                t = time.localtime()
+                current_time = time.strftime("%H:%M:%S", t)
+                print("At time ",current_time)
+                driver.switch_to.window(driver.window_handles[0])
+
+
+                break;
+            time.sleep(1)
+    
+        except Exception as e:
+            print(e)
+            sys.exit()    
+    
+def scrapeDachau():
+    pass
+
+
+
+if __name__ == '__main__':
+#     driver.get("https://www.reddit.com")
+#     driver.execute_script("window.open()")
+#     print(driver.window_handles)
+#     driver.switch_to.window(driver.window_handles[1])
+#     driver.get("https://www.youtube.com")
+#     time.sleep(1)
+#     driver.switch_to.window(driver.window_handles[0])
+#     driver.get("https://python.org")
+    scrapeGrassll(0)
     
 #python_button[0].click()
