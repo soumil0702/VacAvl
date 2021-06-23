@@ -14,15 +14,12 @@ import sys
 
 #import win32api
 import winsound
-from numba.tests.dummy_module import function
-from _pytest.python import Function
-from onepassword.utils import scrape
 # example of adding options
 
 #PRINT SYNTAX print("Total students : %3d, Boys : %2d" % (240, 120))
 
-#driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
-driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
+driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
+#driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
 url_pfizer =[ "https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button",
       "https://termin.dachau-med.de/impfungen03/"]
 
@@ -76,9 +73,15 @@ def scrapeGrassll(vacType): #0=pfizer, 1 = astra
             sys.exit()    
     
 def scrapeDachau():
-    pass
+    driver.get(dachau)
+    time.sleep(4)
+    dropdownXpath="/html/body/span/span/span[2]/ul/li[1]" #doesnt work for some reason
 
-
+    x=(driver.find_elements_by_xpath(dropdownXpath))
+    print(x)
+    if (driver.find_elements_by_class_name("sln-alert--problem")):
+        print('found warning')
+        
 
 if __name__ == '__main__':
 #     driver.get("https://www.reddit.com")
@@ -89,6 +92,6 @@ if __name__ == '__main__':
 #     time.sleep(1)
 #     driver.switch_to.window(driver.window_handles[0])
 #     driver.get("https://python.org")
-    scrapeGrassll(0)
-    
+#    scrapeGrassll(0)
+     scrapeDachau()  
 #python_button[0].click()
