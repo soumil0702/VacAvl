@@ -7,19 +7,25 @@ Created on 18 Jun 2021
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver import ActionChains
 import time
 import sys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 #import win32api
 import winsound
+from conda_verify.cli import cli
+from selenium.webdriver.support.wait import WebDriverWait
 # example of adding options
 
 #PRINT SYNTAX print("Total students : %3d, Boys : %2d" % (240, 120))
 
-driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
-#driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
+#driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
+driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
 url_pfizer =[ "https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button",
       "https://termin.dachau-med.de/impfungen03/"]
 
@@ -74,13 +80,26 @@ def scrapeGrassll(vacType): #0=pfizer, 1 = astra
     
 def scrapeDachau():
     driver.get(dachau)
-    time.sleep(4)
-    dropdownXpath="/html/body/span/span/span[2]/ul/li[1]" #doesnt work for some reason
-
+    time.sleep(1)
+    dropdownXpath="/html/body/span/span/span[2]/ul/li" #doesnt work for some reason
+    driver.find_element_by_class_name("select2-selection--single").click()
     x=(driver.find_elements_by_xpath(dropdownXpath))
-    print(x)
-    if (driver.find_elements_by_class_name("sln-alert--problem")):
-        print('found warning')
+    driver.find_element_by_xpath('//*[@id="sln-step-submit"]').click()
+
+
+    timeout = 5
+    try:
+        element_present = EC.presence_of_element_located((By.CLASS_NAME, 'sln-alert--problem'))
+        WebDriverWait(driver, timeout).until(element_present)
+        
+        print("Page loaded")
+    except TimeoutException:
+        print("Timed out waiting for page to load")
+ #   finally:
+ #       print("Page loaded")
+    
+#     if (driver.find_elements_by_class_name("sln-alert--problem")):
+#         print('found warning')
         
 
 if __name__ == '__main__':
