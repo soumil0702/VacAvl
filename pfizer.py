@@ -20,6 +20,8 @@ from selenium.webdriver.common.by import By
 import winsound
 from conda_verify.cli import cli
 from selenium.webdriver.support.wait import WebDriverWait
+#from prompt_toolkit import input
+
 # example of adding options
 
 #PRINT SYNTAX print("Total students : %3d, Boys : %2d" % (240, 120))
@@ -29,7 +31,9 @@ driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testin
 url_pfizer =[ "https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button",
       "https://termin.dachau-med.de/impfungen03/"]
 
-dachau="https://termin.dachau-med.de/impfungen03/"
+#dachau="https://termin.dachau-med.de/impfungen03/"
+#grassl="https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button"
+#sendlinger="https://www.doctolib.de/gemeinschaftspraxis/muenchen/praxis-am-sendlinger-tor"
 #see if this finds the right button
 time.sleep(2)
 
@@ -55,8 +59,12 @@ def scrapeGrassll(vacType): #0=pfizer, 1 = astra
             elif(vacType==1):
                 vacType=astra
             
-            driver.find_element_by_xpath(vacType).click()
-            
+            try:
+                dropdownAvailable=(driver.find_element_by_xpath(vacType))
+                dropdownAvailable.click()
+            except Exception as e:
+                print("dropdown not available")
+                print(e)
             #driver.find_element_by_xpath(astra).click()
             time.sleep(1)
             x=driver.find_elements_by_class_name("booking-message") #see if warning is available#
@@ -77,8 +85,10 @@ def scrapeGrassll(vacType): #0=pfizer, 1 = astra
         except Exception as e:
             print(e)
             sys.exit()    
+            
     
 def scrapeDachau():
+    dachau="https://termin.dachau-med.de/impfungen03/"
     driver.get(dachau)
     time.sleep(1)
     dropdownXpath="/html/body/span/span/span[2]/ul/li" #doesnt work for some reason
@@ -103,6 +113,10 @@ def scrapeDachau():
         
 
 if __name__ == '__main__':
+    inp = input("g to restart searching in Grassl, d for Dachau ")
+
+    
+          
 #     driver.get("https://www.reddit.com")
 #     driver.execute_script("window.open()")
 #     print(driver.window_handles)
@@ -111,6 +125,13 @@ if __name__ == '__main__':
 #     time.sleep(1)
 #     driver.switch_to.window(driver.window_handles[0])
 #     driver.get("https://python.org")
-#    scrapeGrassll(0)
-     scrapeDachau()  
+    scrapeGrassll(0)  
+
+    if (inp=="g"):
+        scrapeGrassll(0)
+    elif (inp=="d"):
+        scrapeDachau()
+
+#     scrapeDachau()  
 #python_button[0].click()
+#For praxis sendlinger: //*[@id="booking_motive"]/option[9] is the xpath for biontech, same for the public insurance stuff
