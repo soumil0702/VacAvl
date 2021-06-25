@@ -18,7 +18,6 @@ from selenium.webdriver.common.by import By
 
 #import win32api
 import winsound
-from conda_verify.cli import cli
 from selenium.webdriver.support.wait import WebDriverWait
 #from prompt_toolkit import input
 
@@ -26,8 +25,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 #PRINT SYNTAX print("Total students : %3d, Boys : %2d" % (240, 120))
 
-#driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
-driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
+driver = webdriver.Chrome(executable_path="D:\Academic_Software\Eclipse\python\chromedriver.exe")
+#driver = webdriver.Chrome(executable_path="E:\shared_bw_win7and10\Eclipse_Testing\chromedriver_win32\chromedriver.exe")
 url_pfizer =[ "https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button",
       "https://termin.dachau-med.de/impfungen03/"]
 
@@ -37,18 +36,30 @@ url_pfizer =[ "https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?
 #see if this finds the right button
 time.sleep(2)
 
+thisdict = [{
+  "url": "Ford",
+  "model": "Mustang",
+  "year": 1964
+},{
+  "brand": "dorf",
+  "model": "Mang",
+  "year": 1994
+}]# store doctlib urls,buttons like this?
+print(thisdict[0]['brand'])
 
+sys.exit()
 
 def scrapeGrassll(vacType): #0=pfizer, 1 = astra
     
     grassl="https://www.doctolib.de/praxis/muenchen/hausarztpraxis-dr-grassl?utm_medium=referral&utm_campaign=website-button&utm_content=option-5&utm_term=hausarztpraxis-dr-grassl&utm_source=hausarztpraxis-dr-grassl-website-button"
 
     while True:
-        try:
             driver.get(grassl)
             cookiesBtn = "//*[@id='didomi-notice-disagree-button']"
-            if(driver.find_elements_by_xpath(cookiesBtn)):
+            try:
                 driver.find_element_by_xpath(cookiesBtn).click()
+            except Exception as e:
+                print('cookie popup not found')    
             driver.find_element_by_xpath("//*[@id='booking_speciality']/option[3]").click()
             driver.find_element_by_xpath("//*[@id='booking_insurance_sector']/option[1]").click()
             pfizer="//*[@id='booking_motive']/option[2]";
@@ -82,9 +93,6 @@ def scrapeGrassll(vacType): #0=pfizer, 1 = astra
                 break;
             time.sleep(1)
     
-        except Exception as e:
-            print(e)
-            sys.exit()    
             
     
 def scrapeDachau():
